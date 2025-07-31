@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>配信リマインダー通知</title>
+    <title>投稿忘れ確認</title>
     <style>
         /*
          * メールクライアント互換性のため、CSSはできるだけシンプルに
@@ -69,18 +69,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>配信リマインダー通知</h1>
+        <h1>投稿忘れ確認通知</h1>
 
-        <p>こんにちは、{{ $notifiable->name }} さん</p>
+        <p>こんにちは、{{ $streamer->name }} さん</p>
 
-        <p>「<strong>{{ $streamer->name }}</strong>」さんの配信がまもなく始まります。</p>
+        <p>明日以降の予定が投稿されておりませんが、ご都合いかがでしょうか？</p>
 
-        <p>配信タイトル：<strong>{{ $event->title }}</strong></p>
+        <p>リスナー様にお伝えしていただけると幸いです。</p>
 
-        <p>開始時刻：<strong>{{ $event->start_time->format('Y年m月d日 H:i') }}</strong></p>
 
         <div class="button-wrapper">
-            <a href="{{ url("/post/{$event->id}") }}" class="button">配信詳細を見る</a>
+            <a href="{{ url("/post/create") }}" class="button">予定を投稿する</a>
         </div>
 
         <p>引き続きアプリをお楽しみください！</p>

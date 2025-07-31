@@ -21,6 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule) { // ここを追加します
         // ここにあなたのコマンドを記述します
         $schedule->command('notify:schedules')->everyMinute();
+        // $schedule->command('app:check-missing-schedules')->dailyAt('08:00');
+        $schedule->command('app:check-missing-schedules')->everyMinute();
     })->create();
 
     
