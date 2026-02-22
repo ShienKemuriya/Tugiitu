@@ -65,21 +65,49 @@ class SendReminders extends Command
 
             $followers = $streamer->followers; // Userモデルに followers() リレーションが定義されていること
 
-            if ($followers->isEmpty()) {
-                $this->info("ライバー {$streamer->name} をフォローしているユーザーは見つかりませんでした。スキップします。");
-                continue;
-            }
             $this->info("ライバー {$streamer->name} のフォロワー数: {$followers->count()}");
 
-            foreach ($followers as $follower) {
+            // foreach ($followers as $follower) {
+            //     if (empty($follower->email)) {
+            //         $this->warn("フォロワーID: {$follower->id} (名前: {$follower->name}) にメールアドレスが設定されていません。スキップします。");
+            //         continue;
+            //     }
+            //     $this->info("フォロワーID: {$follower->id} (名前: {$follower->name}, メール: {$follower->email}) へ通知を試行します。");
+
+            //     $follower->notify(new EventReminderNotification($schedule, $streamer));
+            //     $this->info("フォロワー {$follower->name} への通知キューイングまたは送信成功。");
+            // }
+
+            //MailTrap送信制限回避用
+            foreach ($followers as $index => $follower) {
+
                 if (empty($follower->email)) {
                     $this->warn("フォロワーID: {$follower->id} (名前: {$follower->name}) にメールアドレスが設定されていません。スキップします。");
                     continue;
                 }
-                $this->info("フォロワーID: {$follower->id} (名前: {$follower->name}, メール: {$follower->email}) へ通知を試行します。");
 
-                $follower->notify(new EventReminderNotification($schedule, $streamer));
-                $this->info("フォロワー {$follower->name} への通知キューイングまたは送信成功。");
+                $this->info("フォロワーID: {$follower->id} (名前: {$follower->name}, メール: {$follower->email}) へ通知をキューに追加します。");
+
+                $follower->notify(
+                    (new EventReminderNotification($schedule, $streamer))
+                        ->delay(now()->addSeconds($index * 2))  // ← ここが重要
+                );
+            }
+
+            // 投稿者本人にも通知（フォロワーが0でも送る）
+            // if (!empty($streamer->email)) {
+            //     $this->info("投稿者 {$streamer->name} に通知を送信します。");
+            //     $streamer->notify(new EventReminderNotification($schedule, $streamer));
+            // }
+
+            //MailTrap送信制限回避用
+            if (!empty($streamer->email)) {
+                $this->info("投稿者 {$streamer->name} に通知をキューに追加します。");
+
+                $streamer->notify(
+                    (new EventReminderNotification($schedule, $streamer))
+                        ->delay(now()->addSeconds(($followers->count() + 1) * 2))
+                );
             }
 
             // 通知済みフラグを更新して保存
