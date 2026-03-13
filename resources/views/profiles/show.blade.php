@@ -1,5 +1,5 @@
 <x-layouts.app :title="'プロフィール'">
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
         {{ $user->name }}
     </h2>
     <div class="flex items-center justify-between w-full ">

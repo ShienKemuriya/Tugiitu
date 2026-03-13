@@ -36,58 +36,32 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+    <x-auth-header :title="__('Create an account')"
+        :description="__('Enter your details below to create your account')" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="register" class="flex flex-col gap-6">
         <!-- Name -->
-        <flux:input
-            wire:model="name"
-            :label="__('Name')"
-            type="text"
-            required
-            autofocus
-            autocomplete="name"
-            :placeholder="__('Full name')"
-        />
+        <flux:input wire:model="name" :label="'アカウント名'" type="text" required autofocus autocomplete="name"
+            :placeholder="'ライバー名 または ユーザー名'" />
 
         <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="__('Email address')"
-            type="email"
-            required
-            autocomplete="email"
-            placeholder="email@example.com"
-        />
+        <flux:input wire:model="email" :label="__('Email address')" type="email" required autocomplete="email"
+            placeholder="email@example.com" />
 
         <!-- Password -->
-        <flux:input
-            wire:model="password"
-            :label="__('Password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Password')"
-            viewable
-        />
+        <flux:input wire:model="password" :label="__('Password')" type="password" required autocomplete="new-password"
+            :placeholder="__('Password')" viewable />
 
         <!-- Confirm Password -->
-        <flux:input
-            wire:model="password_confirmation"
-            :label="__('Confirm password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Confirm password')"
-            viewable
-        />
+        <flux:input wire:model="password_confirmation" :label="__('Confirm password')" type="password" required
+            autocomplete="new-password" :placeholder="__('Confirm password')" viewable />
 
         <div class="flex items-center justify-end">
             <button type="submit"
-                    class="w-full px-4 py-2 bg-teal-700 text-white rounded hover:bg-teal-800 transition duration-200">
+                class="w-full px-4 py-2 bg-teal-700 text-white rounded hover:bg-teal-800 transition duration-200">
                 {{ __('Create account') }}
             </button>
         </div>

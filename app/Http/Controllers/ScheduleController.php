@@ -137,44 +137,6 @@ class ScheduleController extends Controller
     }
 
 
-    // public function api()
-    // {
-    //     $userId = Auth::id();
-
-    //     // 自分の配信がある日
-    //     $mySchedules = Schedule::selectRaw('DATE(start_time) as date')
-    //         ->where('user_id', $userId)
-    //         ->groupBy('date')
-    //         ->get();
-
-    //     // 他人の配信がある日（自分以外）
-    //     $otherSchedules = Schedule::selectRaw('DATE(start_time) as date')
-    //         ->where('user_id', '!=', $userId)
-    //         ->groupBy('date')
-    //         ->get();
-
-    //     // イベント形式に変換
-    //     $events = [];
-
-    //     foreach ($mySchedules as $schedule) {
-    //         $events[] = [
-    //             'start' => $schedule->date,
-    //             'display' => 'background',
-    //             'backgroundColor' => '#7DFF76',//自分の配信日の色
-    //         ];
-    //     }
-
-    //     foreach ($otherSchedules as $schedule) {
-    //         $events[] = [
-    //             'start' => $schedule->date,
-    //             'display' => 'background',
-    //             'backgroundColor' => '#76CDFF', // フォローしているユーザーの配信日の色
-    //         ];
-    //     }
-
-    //     return response()->json($events);
-    // }
-
     //配信がかぶっている日の色を指定できないので下記に修正
     public function api()
     {
