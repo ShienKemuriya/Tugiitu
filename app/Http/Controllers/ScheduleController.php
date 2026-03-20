@@ -46,27 +46,39 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-         $post=new Schedule();
+        $isUnscheduled = $request->boolean('is_unscheduled');
 
-        $inputs=$request->validate([
-            'title'=>'required|string|max:255',
-            'start_time'=>'required|date',
-            'genre'=>'required|string',
-            'body'=>'nullable|max:1000',
+        $inputs = $request->validate([
+            'title' => 'required|string|max:255',
+            'start_time' => 'required|date',
+            'genre' => 'required|string',
+            'body' => 'nullable|max:1000',
         ]);
 
-        $post->title=$request->title;
-        $post->start_time=$request->start_time;
-        $post->genre=$request->genre;
-        $post->body=$request->body;
-        $post->user_id=auth()->user()->id;
+        $post = new Schedule();
+
+        $post->title = $request->title;
+
+        if ($isUnscheduled) {
+            // 日付だけ使って時間は00:00にする
+            $date = \Carbon\Carbon::parse($request->start_time)->format('Y-m-d');
+            $post->start_time = $date . ' 00:00:00';
+        } else {
+            $post->start_time = $request->start_time;
+        }
+
+        $post->is_unscheduled = $isUnscheduled;
+        $post->genre = $request->genre;
+        $post->body = $request->body;
+        $post->user_id = auth()->user()->id;
+
         $post->save();
+
         return redirect()->route('post.create')->with([
             'message' => '投稿を作成しました',
             'type' => 'success',
         ]);
     }
-
     /**
      * Display the specified resource.
      */
@@ -83,7 +95,8 @@ class ScheduleController extends Controller
                 $query->where('user_id', auth()->id())
                     ->orWhereIn('user_id', $followIds);
             })
-            ->orderBy('start_time')
+            ->orderByRaw('is_unscheduled ASC') // 通常→ゲリラ
+            ->orderBy('start_time')           // 時間順
             ->get();
 
         return view('schedules.by-date', compact('schedules', 'date'));
