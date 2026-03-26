@@ -153,9 +153,33 @@ class ScheduleController extends Controller
 
 
     //配信がかぶっている日の色を指定できないので下記に修正
-    public function api()
+    public function api(Request $request)
     {
         $userId = Auth::id();
+        $targetUserId = $request->query('user_id');
+
+        if ($targetUserId) {
+            // 指定されたユーザーの配信日のみ取得
+            $targetSchedules = Schedule::selectRaw('DATE(start_time) as date')
+                ->where('user_id', $targetUserId)
+                ->groupBy('date')
+                ->pluck('date')
+                ->toArray();
+
+            $events = [];
+            // 色設定：自分の場合は緑、他人の場合は水色
+            $backgroundColor = ($targetUserId == $userId) ? '#7DFF76' : '#76CDFF';
+
+            foreach ($targetSchedules as $date) {
+                $events[] = [
+                    'start' => $date,
+                    'display' => 'background',
+                    'backgroundColor' => $backgroundColor,
+                ];
+            }
+
+            return response()->json($events);
+        }
 
         // 自分の配信日を取得
         $mySchedules = Schedule::selectRaw('DATE(start_time) as date')
