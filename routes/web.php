@@ -5,6 +5,7 @@ use Livewire\Volt\Volt;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PostTemplateController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,20 +23,27 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
     Route::resource('post', ScheduleController::class);
-    Route::get('/api/schedules', [ScheduleController::class, 'api'])->name('schedules.api');
-    Route::get('/schedules/date/{date}', [ScheduleController::class, 'showByDate'])->name('schedules.byDate');
+    Route::get('/api/schedules', [ScheduleController::class , 'api'])->name('schedules.api');
+    Route::get('/schedules/date/{date}', [ScheduleController::class , 'showByDate'])->name('schedules.byDate');
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/show/{id}', [UserController::class, 'show'])->name('users.show');
-    Route::get('/users/followings/',[UserController::class, 'following_index'])->name('users.followings');
+    Route::get('/users', [UserController::class , 'index'])->name('users.index');
+    Route::get('/users/show/{id}', [UserController::class , 'show'])->name('users.show');
+    Route::get('/users/followings/', [UserController::class , 'following_index'])->name('users.followings');
 
-    Route::post('/users/{user}/follow', [UserController::class, 'follow'])->name('users.follow');
-    Route::delete('/users/{user}/unfollow', [UserController::class, 'unfollow'])->name('users.unfollow');
+    Route::post('/users/{user}/follow', [UserController::class , 'follow'])->name('users.follow');
+    Route::delete('/users/{user}/unfollow', [UserController::class , 'unfollow'])->name('users.unfollow');
 
     //プロフィールのルーティング
-    Route::get('/profile',[ProfileController::class, 'show'])->name('profiles.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profiles.edit');
-    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profiles.update');
+    Route::get('/profile', [ProfileController::class , 'show'])->name('profiles.show');
+    Route::get('/profile/edit', [ProfileController::class , 'edit'])->name('profiles.edit');
+    Route::patch('/profile/update', [ProfileController::class , 'update'])->name('profiles.update');
+
+    // テンプレート機能のルーティング
+    Route::get('/templates', [PostTemplateController::class , 'index'])->name('templates.index');
+    Route::post('/templates', [PostTemplateController::class , 'store'])->name('templates.store');
+    Route::delete('/templates/{id}', [PostTemplateController::class , 'destroy'])->name('templates.destroy');
+    Route::get('/templates/{id}/edit', [PostTemplateController::class , 'edit'])->name('templates.edit');
+    Route::patch('/templates/{id}', [PostTemplateController::class , 'update'])->name('templates.update');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

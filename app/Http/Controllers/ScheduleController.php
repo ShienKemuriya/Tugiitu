@@ -6,6 +6,7 @@ use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PostTemplate;
 
 
 class ScheduleController extends Controller
@@ -38,7 +39,8 @@ class ScheduleController extends Controller
      */
     public function create()
     {
-        return view('schedules.create');
+        $templates = PostTemplate::where('user_id', auth()->id())->get();
+        return view('schedules.create',  compact('templates'));
     }
 
     /**
