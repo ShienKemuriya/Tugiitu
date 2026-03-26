@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -28,6 +29,12 @@ class ProfileController extends Controller
     // アップロード処理
 
     if ($request->hasFile('icon')) {
+        $user = auth()->user();
+        if ($user->profile && $user->profile->icon) {
+            // 古い画像を削除
+            Storage::disk('public')->delete('icons/' . $user->profile->icon);
+        }
+
         $path = $request->file('icon')->store('icons', 'public');
         $data['icon'] = basename($path); // ファイル名だけ保存
     }
