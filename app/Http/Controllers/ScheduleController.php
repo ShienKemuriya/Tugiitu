@@ -87,17 +87,19 @@ class ScheduleController extends Controller
 
     public function showByDate($date)
     {
-        $user = auth()->user()?->loadMissing('followings');
+        $query = Schedule::with('user')->whereDate('start_time', $date);
 
-        $followIds = optional($user?->followings)->pluck('id') ?? collect();
+        if (auth()->check()) {
+            $user = auth()->user()?->loadMissing('followings');
+            $followIds = optional($user?->followings)->pluck('id') ?? collect();
 
-        $schedules = Schedule::with('user')
-            ->whereDate('start_time', $date)
-            ->where(function ($query) use ($followIds) {
-                $query->where('user_id', auth()->id())
-                    ->orWhereIn('user_id', $followIds);
-            })
-            ->orderByRaw('is_unscheduled ASC') // 通常→ゲリラ
+            $query->where(function ($q) use ($followIds) {
+                $q->where('user_id', auth()->id())
+                  ->orWhereIn('user_id', $followIds);
+            });
+        }
+
+        $schedules = $query->orderByRaw('is_unscheduled ASC') // 通常→ゲリラ
             ->orderBy('start_time')           // 時間順
             ->get();
 

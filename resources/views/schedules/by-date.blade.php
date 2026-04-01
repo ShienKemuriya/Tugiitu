@@ -66,6 +66,6 @@
         </ul>
         @endif
 
-        <a href="{{ route('dashboard') }}" class="inline-block mt-4 text-blue-500 underline">← カレンダーに戻る</a>
+        <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="inline-block mt-4 text-blue-500 underline">← カレンダーに戻る</a>
     </div>
 </x-layouts.app>

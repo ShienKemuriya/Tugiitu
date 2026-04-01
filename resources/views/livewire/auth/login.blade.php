@@ -20,6 +20,19 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
     public bool $remember = false;
 
+    public string $previousUrl = '';
+
+    public function mount(): void
+    {
+        // ログイン画面を開いた直前のURLを取得。Livewireの非同期更新なら取得しない。
+        $url = url()->previous();
+        if ($url !== route('login') && !Str::contains($url, '/livewire/')) {
+            $this->previousUrl = $url;
+        } else {
+            $this->previousUrl = route('dashboard');
+        }
+    }
+
     /**
      * Handle an incoming authentication request.
      */
@@ -40,13 +53,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        // ウェルカムページ（/）からのログインの場合は必ずdashboardにリダイレクト
-        $intendedUrl = Session::get('url.intended', '');
-        if (empty($intendedUrl) || rtrim(parse_url($intendedUrl, PHP_URL_PATH), '/') === '') {
-            $this->redirect(route('dashboard', absolute: false), navigate: false);
-        } else {
+        // url.intended（認証必須ページへのアクセスで弾かれた場合など）がある場合はそちらを優先
+        if (Session::has('url.intended')) {
             $this->redirectIntended(default: route('dashboard', absolute: false), navigate: false);
+            return;
         }
+
+        // それ以外は直前に見ていたページへ戻る
+        $this->redirect($this->previousUrl ?: route('dashboard', absolute: false), navigate: false);
     }
 
     /**
