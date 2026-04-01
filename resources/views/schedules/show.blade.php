@@ -19,7 +19,7 @@
                             @if ($post->user->profile && $post->user->profile->icon)
                                 <img src="{{ asset('storage/icons/' . $post->user->profile->icon) }}" alt="アイコン" class="w-10 h-10 rounded-full object-cover">
                             @else
-                                <div class="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
+                                <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="デフォルトアイコン" class="w-10 h-10 rounded-full flex-shrink-0 border border-gray-200 dark:border-zinc-700">
                             @endif
                             <span class="text-gray-700 dark:text-gray-300 font-medium group-hover:underline">{{ $post->user->name }}</span>
                         </a>

@@ -24,9 +24,7 @@
                     @if($profile->icon)
                         <img src="{{ asset('storage/icons/' . $profile->icon) }}" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white dark:border-gray-800 shadow-md" alt="アイコン">
                     @else
-                        <div class="w-24 h-24 sm:w-32 sm:h-32 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-md">
-                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </div> 
+                        <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white dark:border-gray-800 shadow-md" alt="デフォルトアイコン">
                     @endif
                 </div>
 

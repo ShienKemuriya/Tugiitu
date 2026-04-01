@@ -172,7 +172,7 @@ class ScheduleController extends Controller
                 ->groupBy(fn($s) => $s->start_time?->format('Y-m-d'));
 
             $events = [];
-            $backgroundColor = ($targetUserId == $userId) ? '#7DFF76' : '#76CDFF';
+            $backgroundColor = ($targetUserId == $userId) ? 'rgba(125, 255, 118, 0.4)' : 'rgba(118, 205, 255, 0.4)';
 
             foreach ($schedules as $dateStr => $daySchedules) {
                 if (!$dateStr) continue;
@@ -211,7 +211,7 @@ class ScheduleController extends Controller
                 $events[] = [
                     'start' => $dateStr,
                     'display' => 'background',
-                    'backgroundColor' => '#76CDFF',
+                    'backgroundColor' => 'rgba(118, 205, 255, 0.4)',
                     'extendedProps' => [
                         'users' => $users,
                         'total_users' => $users->count(),
@@ -241,10 +241,10 @@ class ScheduleController extends Controller
             $isFollow = $users->where('is_me', false)->count() > 0;
 
             $backgroundColor = match (true) {
-                $isMine && $isFollow => '#FFB266',
-                $isMine => '#7DFF76',
-                $isFollow => '#76CDFF',
-                default => '#76CDFF'
+                $isMine && $isFollow => 'rgba(255, 178, 102, 0.4)',
+                $isMine => 'rgba(125, 255, 118, 0.4)',
+                $isFollow => 'rgba(118, 205, 255, 0.4)',
+                default => 'rgba(118, 205, 255, 0.4)'
             };
 
             $events[] = [

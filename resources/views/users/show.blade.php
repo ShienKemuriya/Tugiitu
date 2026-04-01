@@ -7,7 +7,8 @@
         @if ($user->profile && $user->profile->icon)
         <img src="{{ asset('storage/icons/' . $user->profile->icon) }}" alt="アイコン" class="w-20 h-20 rounded-full">
         @else
-        <div class="w-20 h-20 bg-gray-300 rounded-full"></div>
+        <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="デフォルトアイコン"
+            class="w-20 h-20 rounded-full border border-gray-200 dark:border-zinc-700">
         @endif
 
         @auth
@@ -38,7 +39,7 @@
     @endauth
     <p class="mt-4 max-w-xl break-words whitespace-pre-wrap border">{{ $user->profile->bio ?? '自己紹介はまだありません。' }}</p>
     <div class="mt-10">
-        <a href="{{ url('/users') }}" class="btn btn-primary text-blue-500 underline">配信一覧に戻る</a>
+        <a href="{{ url('/users') }}" class="btn btn-primary text-blue-500 underline">配信者一覧に戻る</a>
     </div>
 
 </x-layouts.app>

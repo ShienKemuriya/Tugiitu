@@ -114,7 +114,7 @@
         @guest
         <div class="px-2 pb-2 space-y-2">
             <flux:button href="{{ route('login') }}" variant="primary" class="w-full">{{ __('Log in') }}</flux:button>
-            <flux:button href="{{ route('register') }}" variant="subtle" class="w-full">{{ __('Register') }}</flux:button>
+            <flux:button href="{{ route('register') }}" variant="outline" class="w-full">{{ __('Register') }}</flux:button>
         </div>
         @endguest
     </flux:sidebar>
@@ -169,7 +169,7 @@
         @guest
         <div class="pr-2 flex gap-2">
             <flux:button href="{{ route('login') }}" variant="primary" size="sm">{{ __('Log in') }}</flux:button>
-            <flux:button href="{{ route('register') }}" variant="subtle" size="sm">{{ __('Register') }}</flux:button>
+            <flux:button href="{{ route('register') }}" variant="outline" size="sm">{{ __('Register') }}</flux:button>
         </div>
         @endguest
     </flux:header>

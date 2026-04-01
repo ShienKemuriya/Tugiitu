@@ -78,12 +78,12 @@
                         // アイコン
                         let img = document.createElement('img');
                         img.src = user.icon || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
-                        img.classList.add('w-7', 'h-7', 'rounded-full', 'object-cover', 'border', 'border-gray-200', 'dark:border-zinc-700', 'flex-shrink-0');
+                        img.classList.add('w-8', 'h-8', 'rounded-full', 'object-cover', 'border-2', 'border-white', 'dark:border-zinc-600', 'flex-shrink-0', 'shadow-sm');
 
                         // 名前
                         let nameSpan = document.createElement('span');
                         nameSpan.textContent = user.name;
-                        nameSpan.classList.add('text-[11px]', 'sm:text-xs', 'font-medium', 'text-gray-800', 'dark:text-zinc-200', 'truncate', 'hidden', 'sm:inline');
+                        nameSpan.classList.add('text-xs', 'font-bold', 'text-black', 'dark:text-white', 'truncate', 'hidden', 'sm:inline', 'drop-shadow-sm');
 
                         userRow.appendChild(img);
                         userRow.appendChild(nameSpan);
@@ -116,3 +116,10 @@
         });
     </script>
 @endpushonce
+
+<style>
+    /* FullCalendarの背景イベントの透明度をリセットし、アイコンや名前が薄くならないようにする */
+    .fc-bg-event {
+        opacity: 1 !important;
+    }
+</style>

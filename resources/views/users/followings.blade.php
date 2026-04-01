@@ -11,7 +11,7 @@
                         @if($user->profile && $user->profile->icon)
                             <img src="{{ asset('storage/icons/' . $user->profile->icon) }}" alt="アイコン" class="w-12 h-12 rounded-full">
                         @else
-                            <div class="w-12 h-12 bg-gray-300 rounded-full"></div> {{-- デフォルトのアイコン代替 --}}
+                            <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="デフォルトアイコン" class="w-12 h-12 rounded-full border border-gray-200 dark:border-zinc-700">
                         @endif
                         {{ $user->name }}
                     </a>

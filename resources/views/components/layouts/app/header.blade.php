@@ -91,7 +91,7 @@
             @guest
             <div class="flex gap-2">
                 <flux:button href="{{ route('login') }}" variant="primary" size="sm">{{ __('Log in') }}</flux:button>
-                <flux:button href="{{ route('register') }}" variant="subtle" size="sm">{{ __('Register') }}</flux:button>
+                <flux:button href="{{ route('register') }}" variant="outline" size="sm">{{ __('Register') }}</flux:button>
             </div>
             @endguest
         </flux:header>
