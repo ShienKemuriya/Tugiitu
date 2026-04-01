@@ -7,7 +7,7 @@
         <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
-            <a href="{{ route('dashboard') }}" class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0" >
+            <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0" >
                 <x-app-logo />
             </a>
 
@@ -89,7 +89,10 @@
             </flux:dropdown>
             @endauth
             @guest
-            <flux:button href="{{ route('login') }}" variant="primary" size="sm">{{ __('Log in') }}</flux:button>
+            <div class="flex gap-2">
+                <flux:button href="{{ route('login') }}" variant="primary" size="sm">{{ __('Log in') }}</flux:button>
+                <flux:button href="{{ route('register') }}" variant="subtle" size="sm">{{ __('Register') }}</flux:button>
+            </div>
             @endguest
         </flux:header>
 
@@ -97,13 +100,13 @@
         <flux:sidebar stashable sticky class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse" >
+            <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="ms-1 flex items-center space-x-2 rtl:space-x-reverse" >
                 <x-app-logo />
             </a>
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('公開メニュー')">
-                    <flux:navlist.item icon="calendar-days" :href="route('dashboard')" :current="request()->routeIs('dashboard')" >
+                    <flux:navlist.item icon="calendar-days" :href="auth()->check() ? route('dashboard') : route('home')" :current="request()->routeIs('dashboard') || request()->routeIs('home')" >
                     {{ __('配信スケジュール') }}
                     </flux:navlist.item>
 

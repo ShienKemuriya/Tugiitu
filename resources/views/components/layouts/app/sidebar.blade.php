@@ -9,14 +9,14 @@
     <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse">
+        <a href="{{ auth()->check() ? route('dashboard') : route('home') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse">
             <x-app-logo />
         </a>
 
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('公開メニュー')" class="grid">
-                <flux:navlist.item icon="calendar-days" :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard')">{{ __('配信スケジュール') }}</flux:navlist.item>
+                <flux:navlist.item icon="calendar-days" :href="auth()->check() ? route('dashboard') : route('home')"
+                    :current="request()->routeIs('dashboard') || request()->routeIs('home')">{{ __('配信スケジュール') }}</flux:navlist.item>
 
                 <flux:navlist.item icon="magnifying-glass" :href="route('users.index')"
                     :current="request()->routeIs('users.index')" wire:navigate>{{ __('検索') }}</flux:navlist.item>
@@ -112,8 +112,9 @@
         </flux:dropdown>
         @endauth
         @guest
-        <div class="px-2 pb-2">
+        <div class="px-2 pb-2 space-y-2">
             <flux:button href="{{ route('login') }}" variant="primary" class="w-full">{{ __('Log in') }}</flux:button>
+            <flux:button href="{{ route('register') }}" variant="subtle" class="w-full">{{ __('Register') }}</flux:button>
         </div>
         @endguest
     </flux:sidebar>
@@ -166,8 +167,9 @@
         </flux:dropdown>
         @endauth
         @guest
-        <div class="pr-2">
+        <div class="pr-2 flex gap-2">
             <flux:button href="{{ route('login') }}" variant="primary" size="sm">{{ __('Log in') }}</flux:button>
+            <flux:button href="{{ route('register') }}" variant="subtle" size="sm">{{ __('Register') }}</flux:button>
         </div>
         @endguest
     </flux:header>
