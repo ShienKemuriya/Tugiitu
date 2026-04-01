@@ -18,7 +18,6 @@ Route::view('dashboard', 'dashboard')
 // F-07: 未ログイン閲覧可能なルート
 Route::get('/api/schedules', [ScheduleController::class , 'api'])->name('schedules.api');
 Route::get('/schedules/date/{date}', [ScheduleController::class , 'showByDate'])->name('schedules.byDate');
-Route::get('/post/{post}', [ScheduleController::class , 'show'])->name('post.show');
 Route::get('/users', [UserController::class , 'index'])->name('users.index');
 Route::get('/users/show/{id}', [UserController::class , 'show'])->name('users.show');
 
@@ -48,5 +47,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/templates/{id}/edit', [PostTemplateController::class , 'edit'])->name('templates.edit');
     Route::patch('/templates/{id}', [PostTemplateController::class , 'update'])->name('templates.update');
 });
+
+// ゲスト閲覧用の個別投稿表示（必ず 'post/create' などの一致より後に判定させるためにここに配置）
+Route::get('/post/{post}', [ScheduleController::class , 'show'])->name('post.show');
 
 require __DIR__ . '/auth.php';
