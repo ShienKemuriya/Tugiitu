@@ -18,6 +18,7 @@ Route::view('dashboard', 'dashboard')
 // F-07: 未ログイン閲覧可能なルート
 Route::get('/api/schedules', [ScheduleController::class , 'api'])->name('schedules.api');
 Route::get('/schedules/date/{date}', [ScheduleController::class , 'showByDate'])->name('schedules.byDate');
+Route::get('/post/{post}', [ScheduleController::class , 'show'])->name('post.show');
 Route::get('/users', [UserController::class , 'index'])->name('users.index');
 Route::get('/users/show/{id}', [UserController::class , 'show'])->name('users.show');
 
@@ -28,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
-    Route::resource('post', ScheduleController::class);
+    Route::resource('post', ScheduleController::class)->except(['show']);
 
     Route::get('/users/followings/', [UserController::class , 'following_index'])->name('users.followings');
 

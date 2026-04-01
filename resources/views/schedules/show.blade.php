@@ -9,10 +9,22 @@
                 <x-message :message="session('message')" type="success" />
                 <div class="bg-white dark:bg-gray-800 dark:text-gray-200 w-full rounded-2xl px-10 py-8 shadow-lg hover:shadow-2xl transition duration-500">
                     <div class="mt-4">
-                        <p class="text-lg font-semibold">
+                        <p class="text-3xl font-semibold">
                             {{ $post->title }}
                         </p>
                     </div>
+
+                    <div class="mt-4 mb-4">
+                        <a href="{{ route('users.show', $post->user_id) }}" class="inline-flex items-center space-x-3 group">
+                            @if ($post->user->profile && $post->user->profile->icon)
+                                <img src="{{ asset('storage/icons/' . $post->user->profile->icon) }}" alt="アイコン" class="w-10 h-10 rounded-full object-cover">
+                            @else
+                                <div class="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
+                            @endif
+                            <span class="text-gray-700 dark:text-gray-300 font-medium group-hover:underline">{{ $post->user->name }}</span>
+                        </a>
+                    </div>
+
                     <hr class="w-full">
 
                     <p>

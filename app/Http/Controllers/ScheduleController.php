@@ -179,7 +179,7 @@ class ScheduleController extends Controller
                 $users = $daySchedules->map(fn($s) => [
                     'id' => $s->user_id,
                     'name' => $s->user->name,
-                    'icon' => $s->user->profile?->icon ? asset('storage/' . $s->user->profile->icon) : null,
+                    'icon' => $s->user->profile?->icon ? asset('storage/icons/' . $s->user->profile->icon) : null,
                 ])->unique('id')->values();
 
                 $events[] = [
@@ -205,7 +205,7 @@ class ScheduleController extends Controller
                 $users = $daySchedules->map(fn($s) => [
                     'id' => $s->user_id,
                     'name' => $s->user->name,
-                    'icon' => $s->user->profile?->icon ? asset('storage/' . $s->user->profile->icon) : null,
+                    'icon' => $s->user->profile?->icon ? asset('storage/icons/' . $s->user->profile->icon) : null,
                 ])->unique('id')->values();
 
                 $events[] = [
@@ -233,7 +233,7 @@ class ScheduleController extends Controller
             $users = $daySchedules->map(fn($s) => [
                 'id' => $s->user_id,
                 'name' => $s->user->name,
-                'icon' => $s->user->profile?->icon ? asset('storage/' . $s->user->profile->icon) : null,
+                'icon' => $s->user->profile?->icon ? asset('storage/icons/' . $s->user->profile->icon) : null,
                 'is_me' => ($s->user_id == $userId),
             ])->unique('id')->values();
 
