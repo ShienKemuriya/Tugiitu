@@ -15,6 +15,12 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// F-07: 未ログイン閲覧可能なルート
+Route::get('/api/schedules', [ScheduleController::class , 'api'])->name('schedules.api');
+Route::get('/schedules/date/{date}', [ScheduleController::class , 'showByDate'])->name('schedules.byDate');
+Route::get('/users', [UserController::class , 'index'])->name('users.index');
+Route::get('/users/show/{id}', [UserController::class , 'show'])->name('users.show');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
@@ -23,11 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
     Route::resource('post', ScheduleController::class);
-    Route::get('/api/schedules', [ScheduleController::class , 'api'])->name('schedules.api');
-    Route::get('/schedules/date/{date}', [ScheduleController::class , 'showByDate'])->name('schedules.byDate');
 
-    Route::get('/users', [UserController::class , 'index'])->name('users.index');
-    Route::get('/users/show/{id}', [UserController::class , 'show'])->name('users.show');
     Route::get('/users/followings/', [UserController::class , 'following_index'])->name('users.followings');
 
     Route::post('/users/{user}/follow', [UserController::class , 'follow'])->name('users.follow');

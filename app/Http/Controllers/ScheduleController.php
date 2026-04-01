@@ -152,73 +152,107 @@ class ScheduleController extends Controller
     }
 
 
-    //配信がかぶっている日の色を指定できないので下記に修正
     public function api(Request $request)
     {
         $userId = Auth::id();
         $targetUserId = $request->query('user_id');
+        $genre = $request->query('genre');
+        $date = $request->query('date');
+
+        $query = Schedule::with(['user.profile'])
+            ->whereNotNull('start_time')
+            ->when($genre, fn($q) => $q->where('genre', $genre))
+            ->when($date, fn($q) => $q->whereDate('start_time', $date));
 
         if ($targetUserId) {
-            // 指定されたユーザーの配信日のみ取得
-            $targetSchedules = Schedule::selectRaw('DATE(start_time) as date')
-                ->where('user_id', $targetUserId)
-                ->groupBy('date')
-                ->pluck('date')
-                ->toArray();
+            $schedules = (clone $query)->where('user_id', $targetUserId)
+                ->get()
+                ->groupBy(fn($s) => $s->start_time?->format('Y-m-d'));
 
             $events = [];
-            // 色設定：自分の場合は緑、他人の場合は水色
             $backgroundColor = ($targetUserId == $userId) ? '#7DFF76' : '#76CDFF';
 
-            foreach ($targetSchedules as $date) {
+            foreach ($schedules as $dateStr => $daySchedules) {
+                if (!$dateStr) continue;
+                $users = $daySchedules->map(fn($s) => [
+                    'id' => $s->user_id,
+                    'name' => $s->user->name,
+                    'icon' => $s->user->profile?->icon ? asset('storage/' . $s->user->profile->icon) : null,
+                ])->unique('id')->values();
+
                 $events[] = [
-                    'start' => $date,
+                    'start' => $dateStr,
                     'display' => 'background',
                     'backgroundColor' => $backgroundColor,
+                    'extendedProps' => [
+                        'users' => $users,
+                        'total_users' => $users->count(),
+                    ]
                 ];
             }
-
             return response()->json($events);
         }
 
-        // 自分の配信日を取得
-        $mySchedules = Schedule::selectRaw('DATE(start_time) as date')
-            ->where('user_id', $userId)
-            ->groupBy('date')
-            ->pluck('date')
-            ->toArray();
+        if (!Auth::check()) {
+            $schedules = (clone $query)->get()
+                ->groupBy(fn($s) => $s->start_time?->format('Y-m-d'));
 
-        // フォローしているユーザーの配信日を取得
-        $followIds = auth()->user()->followings->pluck('id');
+            $events = [];
+            foreach ($schedules as $dateStr => $daySchedules) {
+                if (!$dateStr) continue;
+                $users = $daySchedules->map(fn($s) => [
+                    'id' => $s->user_id,
+                    'name' => $s->user->name,
+                    'icon' => $s->user->profile?->icon ? asset('storage/' . $s->user->profile->icon) : null,
+                ])->unique('id')->values();
 
-        $otherSchedules = Schedule::selectRaw('DATE(start_time) as date')
-            ->whereIn('user_id', $followIds)
-            ->groupBy('date')
-            ->pluck('date')
-            ->toArray();
+                $events[] = [
+                    'start' => $dateStr,
+                    'display' => 'background',
+                    'backgroundColor' => '#76CDFF',
+                    'extendedProps' => [
+                        'users' => $users,
+                        'total_users' => $users->count(),
+                    ]
+                ];
+            }
+            return response()->json($events);
+        }
 
-        // 日付をマージしてユニーク化
-        $allDates = collect($mySchedules)
-            ->merge($otherSchedules)
-            ->unique();
+        $followIds = auth()->user()->followings->pluck('id')->push($userId);
+
+        $schedules = (clone $query)->whereIn('user_id', $followIds)
+            ->get()
+            ->groupBy(fn($s) => $s->start_time?->format('Y-m-d'));
 
         $events = [];
+        foreach ($schedules as $dateStr => $daySchedules) {
+            if (!$dateStr) continue;
+            $users = $daySchedules->map(fn($s) => [
+                'id' => $s->user_id,
+                'name' => $s->user->name,
+                'icon' => $s->user->profile?->icon ? asset('storage/' . $s->user->profile->icon) : null,
+                'is_me' => ($s->user_id == $userId),
+            ])->unique('id')->values();
 
-        foreach ($allDates as $date) {
-            $isMine = in_array($date, $mySchedules);
-            $isFollow = in_array($date, $otherSchedules);
+            $isMine = $users->contains('is_me', true);
+            $isFollow = $users->where('is_me', false)->count() > 0;
 
             $backgroundColor = match (true) {
-                $isMine && $isFollow => '#FFB266', // 両方ある：グレー
-                $isMine => '#7DFF76',              // 自分の配信だけ：緑
-                $isFollow => '#76CDFF',            // フォロー中だけ：水色
-                default => '#FFFFFF',
+                $isMine && $isFollow => '#FFB266',
+                $isMine => '#7DFF76',
+                $isFollow => '#76CDFF',
+                default => '#76CDFF'
             };
 
             $events[] = [
-                'start' => $date,
+                'start' => $dateStr,
                 'display' => 'background',
                 'backgroundColor' => $backgroundColor,
+                'extendedProps' => [
+                    'users' => $users,
+                    'total_users' => $users->count(),
+                ]
             ];
         }
 

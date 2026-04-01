@@ -44,6 +44,7 @@
             </flux:navbar>
 
             <!-- Desktop User Menu -->
+            @auth
             <flux:dropdown position="top" align="end">
                 <flux:profile
                     class="cursor-pointer"
@@ -86,6 +87,10 @@
                     </form>
                 </flux:menu>
             </flux:dropdown>
+            @endauth
+            @guest
+            <flux:button href="{{ route('login') }}" variant="primary" size="sm">{{ __('Log in') }}</flux:button>
+            @endguest
         </flux:header>
 
         <!-- Mobile Menu -->
@@ -97,9 +102,42 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')">
-                    <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" >
-                    {{ __('Dashboard') }}
+                <flux:navlist.group :heading="__('公開メニュー')">
+                    <flux:navlist.item icon="calendar-days" :href="route('dashboard')" :current="request()->routeIs('dashboard')" >
+                    {{ __('配信スケジュール') }}
+                    </flux:navlist.item>
+
+                    <flux:navlist.item icon="magnifying-glass" :href="route('users.index')" :current="request()->routeIs('users.index')" wire:navigate>
+                    {{ __('検索') }}
+                    </flux:navlist.item>
+                </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('ライバー機能 (要ログイン)')" class="mt-4 border-t border-zinc-200 dark:border-zinc-700 pt-4">
+                    <flux:navlist.item icon="pencil-square" :href="auth()->check() ? route('post.create') : route('login')" :current="request()->routeIs('post.create')" wire:navigate>
+                        <div class="flex justify-between items-center w-full">
+                            <span>{{ __('予定を投稿') }}</span>
+                            @guest
+                            <flux:icon.lock-closed class="size-4 text-zinc-400" />
+                            @endguest
+                        </div>
+                    </flux:navlist.item>
+
+                    <flux:navlist.item icon="clipboard-document" :href="auth()->check() ? route('templates.index') : route('login')" :current="request()->routeIs('templates.index')" wire:navigate>
+                        <div class="flex justify-between items-center w-full">
+                            <span>{{ __('テンプレート管理') }}</span>
+                            @guest
+                            <flux:icon.lock-closed class="size-4 text-zinc-400" />
+                            @endguest
+                        </div>
+                    </flux:navlist.item>
+
+                    <flux:navlist.item icon="users" :href="auth()->check() ? route('profiles.show') : route('login')" :current="request()->routeIs('profiles.show')" wire:navigate>
+                        <div class="flex justify-between items-center w-full">
+                            <span>{{ __('プロフィール') }}</span>
+                            @guest
+                            <flux:icon.lock-closed class="size-4 text-zinc-400" />
+                            @endguest
+                        </div>
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
@@ -119,6 +157,8 @@
 
         {{ $slot }}
 
+        @stack('styles')
         @fluxScripts
+        @stack('scripts')
     </body>
 </html>

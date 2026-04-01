@@ -40,7 +40,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: false);
+        // ウェルカムページ（/）からのログインの場合は必ずdashboardにリダイレクト
+        $intendedUrl = Session::get('url.intended', '');
+        if (empty($intendedUrl) || rtrim(parse_url($intendedUrl, PHP_URL_PATH), '/') === '') {
+            $this->redirect(route('dashboard', absolute: false), navigate: false);
+        } else {
+            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: false);
+        }
     }
 
     /**

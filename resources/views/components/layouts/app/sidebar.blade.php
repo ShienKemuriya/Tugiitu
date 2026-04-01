@@ -14,22 +14,44 @@
         </a>
 
         <flux:navlist variant="outline">
-            <flux:navlist.group :heading="__('Menu')" class="grid">
+            <flux:navlist.group :heading="__('公開メニュー')" class="grid">
                 <flux:navlist.item icon="calendar-days" :href="route('dashboard')"
                     :current="request()->routeIs('dashboard')">{{ __('配信スケジュール') }}</flux:navlist.item>
 
-                <flux:navlist.item icon="pencil-square" :href="route('post.create')"
-                    :current="request()->routeIs('post.create')" wire:navigate>{{ __('予定を投稿') }}</flux:navlist.item>
-
-                <flux:navlist.item icon="clipboard-document" :href="route('templates.index')"
-                    :current="request()->routeIs('templates.index')" wire:navigate>{{ __('テンプレート管理') }}
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="users" :href="route('profiles.show')"
-                    :current="request()->routeIs('profiles.show')" wire:navigate>{{ __('プロフィール') }}</flux:navlist.item>
-
                 <flux:navlist.item icon="magnifying-glass" :href="route('users.index')"
                     :current="request()->routeIs('users.index')" wire:navigate>{{ __('検索') }}</flux:navlist.item>
+            </flux:navlist.group>
+
+            <flux:navlist.group :heading="__('ライバー機能 (要ログイン)')" class="grid mt-4 border-t border-zinc-200 dark:border-zinc-700 pt-4">
+                <flux:navlist.item icon="pencil-square" :href="auth()->check() ? route('post.create') : route('login')"
+                    :current="request()->routeIs('post.create')" wire:navigate>
+                    <div class="flex justify-between items-center w-full">
+                        <span>{{ __('予定を投稿') }}</span>
+                        @guest
+                        <flux:icon.lock-closed class="size-4 text-zinc-400" />
+                        @endguest
+                    </div>
+                </flux:navlist.item>
+
+                <flux:navlist.item icon="clipboard-document" :href="auth()->check() ? route('templates.index') : route('login')"
+                    :current="request()->routeIs('templates.index')" wire:navigate>
+                    <div class="flex justify-between items-center w-full">
+                        <span>{{ __('テンプレート管理') }}</span>
+                        @guest
+                        <flux:icon.lock-closed class="size-4 text-zinc-400" />
+                        @endguest
+                    </div>
+                </flux:navlist.item>
+
+                <flux:navlist.item icon="users" :href="auth()->check() ? route('profiles.show') : route('login')"
+                    :current="request()->routeIs('profiles.show')" wire:navigate>
+                    <div class="flex justify-between items-center w-full">
+                        <span>{{ __('プロフィール') }}</span>
+                        @guest
+                        <flux:icon.lock-closed class="size-4 text-zinc-400" />
+                        @endguest
+                    </div>
+                </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 
@@ -47,6 +69,7 @@
             </flux:navlist> -->
 
         <!-- Desktop User Menu -->
+        @auth
         <flux:dropdown position="bottom" align="start">
             <flux:profile :name="auth()->user()->name" :initials="auth()->user()->initials()"
                 icon-trailing="chevrons-up-down" />
@@ -87,6 +110,12 @@
                 </form>
             </flux:menu>
         </flux:dropdown>
+        @endauth
+        @guest
+        <div class="px-2 pb-2">
+            <flux:button href="{{ route('login') }}" variant="primary" class="w-full">{{ __('Log in') }}</flux:button>
+        </div>
+        @endguest
     </flux:sidebar>
 
     <!-- Mobile User Menu -->
@@ -95,6 +124,7 @@
 
         <flux:spacer />
 
+        @auth
         <flux:dropdown position="top" align="end">
             <flux:profile :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
 
@@ -134,11 +164,19 @@
                 </form>
             </flux:menu>
         </flux:dropdown>
+        @endauth
+        @guest
+        <div class="pr-2">
+            <flux:button href="{{ route('login') }}" variant="primary" size="sm">{{ __('Log in') }}</flux:button>
+        </div>
+        @endguest
     </flux:header>
 
     {{ $slot }}
 
+    @stack('styles')
     @fluxScripts
+    @stack('scripts')
 </body>
 
 </html>
